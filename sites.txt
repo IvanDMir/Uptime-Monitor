@@ -1,0 +1,5 @@
+https://www.argentina.gob.ar
+https://www.arca.gob.ar
+https://www.tucuman.gob.ar
+https://sitio-que-no-existe-123.gob.ar
+https://httpbin.org/status/500
