@@ -9,24 +9,34 @@ def save_logs(message):
     with open("results.log", "a", encoding="utf-8") as log_file:
         log_file.write(line + "\n")
 
-with open("sites.txt", "r", encoding="utf-8") as file:
-    urls = [line.strip() for line in file if line.strip()]
+def read_sites(path):
+    with open(path, "r", encoding="utf-8") as file:
+        urls = [line.strip() for line in file if line.strip()]
+    return urls
 
 
 
-for url in urls:
+def check_site(url):
     try:
         r = requests.get(url, timeout=5)
         if r.status_code < 400:
-            save_logs(
+            return (
                 f"[UP]   HTTP {r.status_code} | "
                 f"{r.elapsed.total_seconds():.2f} s | {url}"
             )
-        else:
-            save_logs(f"[DOWN] HTTP {r.status_code} | {url}")
+        return f"[DOWN] HTTP {r.status_code} | {url}"
     except requests.Timeout:
-        save_logs(f"[DOWN] TIMEOUT | {url}")
+        return f"[DOWN] TIMEOUT | {url}"
     except requests.ConnectionError:
-        save_logs(f"[DOWN] CONNECTION ERROR | {url}")
+        return f"[DOWN] CONNECTION ERROR | {url}"
     except requests.RequestException:
-        save_logs(f"[DOWN] REQUEST ERROR | {url}")
+        return f"[DOWN] REQUEST ERROR | {url}"
+    
+
+def main():
+    urls = read_sites("sites.txt")
+    for url in urls:
+        save_logs(check_site(url))
+
+if __name__ == "__main__":
+    main()
