@@ -1,5 +1,5 @@
 from datetime import timedelta
-import check
+from app import checker
 import requests
 
 
@@ -13,9 +13,9 @@ def test_check_site_up(monkeypatch):
     def fake_get(url, timeout):
         return FakeResponse(200)
 
-    monkeypatch.setattr(check.requests, "get", fake_get)
+    monkeypatch.setattr(checker.requests, "get", fake_get)
 
-    result = check.check_site("https://ejemplo.com")
+    result = checker.check_site("https://ejemplo.com")
 
     assert result == "[UP]   HTTP 200 | 0.50 s | https://ejemplo.com"
 
@@ -23,9 +23,9 @@ def test_check_site_500(monkeypatch):
     def fake_get(url, timeout):
         return FakeResponse(500)
 
-    monkeypatch.setattr(check.requests, "get", fake_get)
+    monkeypatch.setattr(checker.requests, "get", fake_get)
 
-    result = check.check_site("https://ejemplo.com")
+    result = checker.check_site("https://ejemplo.com")
 
     assert result == "[DOWN] HTTP 500 | https://ejemplo.com"
 
@@ -33,8 +33,8 @@ def test_check_site_timeout(monkeypatch):
     def fake_get(url, timeout):
         raise requests.Timeout
 
-    monkeypatch.setattr(check.requests, "get", fake_get)
+    monkeypatch.setattr(checker.requests, "get", fake_get)
 
-    result = check.check_site("https://ejemplo.com")
+    result = checker.check_site("https://ejemplo.com")
 
     assert result == "[DOWN] TIMEOUT | https://ejemplo.com"
